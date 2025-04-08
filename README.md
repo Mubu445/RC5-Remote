@@ -11,10 +11,10 @@ This project enables your ESP32 to receive and decode **RC5 infrared remote cont
 - 📦 Easy integration with any ESP-IDF project
 - ⏱ Periodic polling using FreeRTOS
 
-##Use
-'\
-void check_sw(uint8_t keybyte, uint8_t toggle)
-{
+## Usage 
+
+    void check_sw(uint8_t keybyte, uint8_t toggle)
+    {
     if (prev_toggle == toggle)
     {
         if (prev_keybyte == keybyte)
@@ -28,32 +28,38 @@ void check_sw(uint8_t keybyte, uint8_t toggle)
             prev_keybyte = keybyte;
             counter = 0;
         }
-        prev_toggle = toggle;
+         prev_toggle = toggle;
     }
+    
     else
     {
         prev_toggle = toggle;
         prev_keybyte = keybyte;
         counter = 0;
+    
     }
-    // ESP_LOGI(TAG, "counter=%d, keybyte=%d", counter, keybyte);
-    //  PORTA ^= (1<<PORTA6); //debug
+    
     switch (keybyte)
     {
+    
     // inverted 4 data bits
+    
     case 56:
         flag_sw_prog = 1;
         break; // 200*5=1000ms, 1sec
+        
     case 59:
         flag_sw_menu = 1;
         break;
+        
     case 37:
         flag_sw_set = 1;
         break;
-
+        
     case 32:
         flag_sw_up = 1;
         break; // 50*5=250ms, 1/4sec
+        
     case 33:
         flag_sw_up = 1;
         break;
@@ -85,21 +91,19 @@ void check_sw(uint8_t keybyte, uint8_t toggle)
         break;
     default:
         break;
+        }
     }
-}
-'\
-'\
-void rc5_task(void *pvParameters)
-{
-    uint16_t command;
-    uint8_t toggle;
-    uint8_t address;
-    uint8_t cmdnum;
-    uint8_t blink_counter = 0;
-    const TickType_t xFrequency = pdMS_TO_TICKS(250);
-    TickType_t xLastWakeTime = xTaskGetTickCount(); // Initialize xLastWakeTime to the current tick count
-
-    while (1)
+    
+    void rc5_task(void *pvParameters)
+    {
+        uint16_t command;
+        uint8_t toggle;
+        uint8_t address;
+        uint8_t cmdnum;
+        uint8_t blink_counter = 0;
+        const TickType_t xFrequency = pdMS_TO_TICKS(250);
+        TickType_t xLastWakeTime = xTaskGetTickCount(); // Initialize xLastWakeTime to the current tick count
+        while (1)
     {
         if (prog_flag || menu_flag)
         {
@@ -141,14 +145,13 @@ void rc5_task(void *pvParameters)
 
         vTaskDelayUntil(&xLastWakeTime, xFrequency);
     }
-}
-'\
-'\
-void app_main(void)
-{
+    }
+
+    void app_main(void)
+    {
      /* Create a FreeRTOS task to handle RC5 decoding */
     RC5_Init();
     xTaskCreate(&rc5_task, "rc5_task", 4096, NULL, 10, NULL);
 
-}
+    }
 '\
