@@ -12,7 +12,7 @@ This project enables your ESP32 to receive and decode **RC5 infrared remote cont
 - ⏱ Periodic polling using FreeRTOS
 
 ##Use
-
+'\
 void check_sw(uint8_t keybyte, uint8_t toggle)
 {
     if (prev_toggle == toggle)
@@ -87,7 +87,8 @@ void check_sw(uint8_t keybyte, uint8_t toggle)
         break;
     }
 }
-
+'\
+'\
 void rc5_task(void *pvParameters)
 {
     uint16_t command;
@@ -141,7 +142,8 @@ void rc5_task(void *pvParameters)
         vTaskDelayUntil(&xLastWakeTime, xFrequency);
     }
 }
-
+'\
+'\
 void app_main(void)
 {
      /* Create a FreeRTOS task to handle RC5 decoding */
@@ -149,4 +151,4 @@ void app_main(void)
     xTaskCreate(&rc5_task, "rc5_task", 4096, NULL, 10, NULL);
 
 }
-
+'\
